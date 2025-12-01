@@ -65,6 +65,20 @@ jobs:
           Invoke-WebRequest -Uri $tsUrl -OutFile $installerPath
           Start-Process msiexec.exe -ArgumentList "/i", "`"$installerPath`"", "/quiet", "/norestart" -Wait
           Remove-Item $installerPath -Force
+          
+        - name: Install
+        run: |
+        if ("${{ inputs.rdp_count }}" -gt 1) { $hn = "meow-pc${{ matrix.id }}" } else { $hn = "meow-pc" }
+          "TS_HOSTNAME=$hn" | Out-File -Append $env:GITHUB_ENV
+
+          function Yes($v){ "$v" -match '^(?i:true|1|yes|on)$' }
+          function IntOr($v,$d){ if("$v" -match '^\d+$'){ [int]$v } else { [int]$d } }
+          $runtime = IntOr("${{ inputs.runtime_minutes }}",355)
+          if (Yes("${{ inputs.quick_test }}")) { $runtime = 5 }
+          if (-not (Yes("${{ inputs.quick_test }}")) -and $runtime -lt 6) { $runtime = 355 }
+          if ($runtime -gt 360) { $runtime = 355 }
+          "RUNTIME_MINUTES=$runtime" | Out-File -Append $env:GITHUB_ENV
+          Write-Host "Hostname: $hn  | Runtime: $runtime"
 
       - name: Establish Tailscale Connection
         run: |
