@@ -55,7 +55,7 @@ jobs:
           if (-not (Get-LocalUser -Name "RDP")) {
               Write-Error "User creation failed"
               exit 1
-          }
+        
  - name: setting name
         run: |
         if ("${{ inputs.rdp_count }}" -gt 1) { $hn = "meow-pc${{ matrix.id }}" } else { $hn = "meow-pc" }
