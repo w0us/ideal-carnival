@@ -56,7 +56,6 @@ jobs:
               Write-Error "User creation failed"
               exit 1
           }
-
  - name: setting name
         run: |
         if ("${{ inputs.rdp_count }}" -gt 1) { $hn = "meow-pc${{ matrix.id }}" } else { $hn = "meow-pc" }
@@ -99,7 +98,7 @@ jobs:
               exit 1
           }
           echo "TAILSCALE_IP=$tsIP" >> $env:GITHUB_ENV
-      
+    
       - name: Verify RDP Accessibility
         run: |
           Write-Host "Tailscale IP: $env:TAILSCALE_IP"
